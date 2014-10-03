@@ -16,6 +16,7 @@
 (require 'whitespace)
 (require 'dired-x)
 (require 'compile)
+(require 'color)
 (ido-mode t)
 (menu-bar-mode -1)
 (normal-erase-is-backspace-mode 1)
@@ -65,6 +66,9 @@
 (global-set-key "\M-d" 'delete-word)
 (global-set-key "\M-h" 'backward-delete-word)
 (global-set-key "\M-u" 'zap-to-char)
+(global-set-key "\C-xh" 'help-command)
+(global-set-key "\M-/" 'hippie-expand)
+(global-set-key "\M-]" 'company-complete-common)
 
 ;; ---------------------------
 ;; -- JS Mode configuration --
@@ -75,3 +79,41 @@
 (require 'jade-mode)    
 (add-to-list 'auto-mode-alist '("\\.styl$" . sws-mode))
 (add-to-list 'auto-mode-alist '("\\.jade$" . jade-mode))
+
+;; yasnippet
+(add-to-list 'load-path "~/.emacs.d/elpa/yasnippet-0.8.0")
+(require 'yasnippet)
+(yas-global-mode 1)
+
+;; global company mode
+;;(add-hook 'after-init-hook 'global-company-mode)
+
+;; autocomplete
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(ac-config-default)
+
+(ac-set-trigger-key "TAB")
+(ac-set-trigger-key "<tab>")
+
+(require 'package)
+(dolist (source '(("marmalade" . "http://marmalade-repo.org/packages/")
+                  ("elpa" . "http://tromey.com/elpa/")
+                  ("melpa" . "http://melpa.milkbox.net/packages/")
+                  ))
+  (add-to-list 'package-archives source t))
+(package-initialize)
+
+(require 'flycheck)
+
+(add-hook 'js-mode-hook
+	  (lambda () (flycheck-mode t)))
+
+;; Code folding
+(add-hook 'js-mode-hook
+          (lambda ()
+            ;; Scan the file for nested code blocks
+            (imenu-add-menubar-index)
+            ;; Activate the folding mode
+            (hs-minor-mode t)))
+
